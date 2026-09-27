@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    {% if user.is_authenticated %}
+    <h1>Welcome Manager {{user.username}}</h1>
+    <nav align="right"><a href="{% url 'logout' %}">Logout</a></nav>
+    {% if messages %}
+    {% for message in messages %}
+    <p>{{ message }}</p>
+    {% endfor %}
+    {% endif %}
+    <table align="center" border="2">
+        <tr>
+            <td colspan="4">Added Medicine List
+
+            </td>
+            <td><a href="{% url 'add' %}" align="right">Add Medicine</a></td>
+        </tr>
+        <tr>
+            <td colspan="5">
+                <form method="get">
+                    <input type="text" name="search" placeholder="Search for medicine">
+
+                    <button type="submit">Search</button>
+                </form>
+            </td>
+        </tr>
+        <tr>
+            <td>Medicine name</td>
+            <td>Available Stock</td>
+            <td>Added Time</td>
+            <td>Edit</td>
+            <td>Delete</td>
+        </tr>
+
+        {% if page_object %}
+        {% for data in page_object %}
+        <tr>
+            <td>{{data.medicinename}}</td>
+            <td>{{data.availablestock}}</td>
+            <td>{{data.added_time}}</td>
+            <td><a href="{%url 'edit' data.id %}">Edit</a></td>
+            <td><a href="{%url 'delete' data.id %}">Delete</a></td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="5">
+                {% if page_object.has_previous %}
+                <a href="?page={{ page_object.previous_page_number }}">
+                    Previous
+                </a>
+                {% endif %}
+                <span>
+                    Page {{ page_object.number }} of {{ page_object.paginator.num_pages }}
+                </span>
+                {% if page_object.has_next %}
+                <a href="?page={{ page_object.next_page_number }}">
+                    Next
+                </a>
+                {% endif %}
+            </td>
+        </tr>
+        {%else %}
+        <tr>
+            <td colspan="5">
+                No Medicine added
+            </td>
+        </tr>
+        {% endif %}
+    </table>
+
+
+    {% else %}
+    <p>Please Try to login by clicking the link
+        <a href="{% url 'login' %}">Login</a>
+    </p>
+    {% endif %}
+</body>
+
+</html>
